@@ -1,5 +1,6 @@
 //import java.util;
 import java.util.Scanner;
+import helpers.java;
 
 
 /*
@@ -15,10 +16,10 @@ import java.util.Scanner;
 
 public class Main {
     // globale Variablen
-    static boolean geloest = true;
+    static boolean solved = false;
     static int[][] sudoku = new int[9][9];
-    static boolean loesbar = true;
-    static int[][][] kleineZahlen = new int[9][9][10];
+    static boolean solvable = true;
+    static int[][][] smallNumbers = new int[9][9][10];
 
 
     // methoden
@@ -350,8 +351,7 @@ public class Main {
                 5 ,9 ,7 ,2 ,3 ,8 ,1 ,6, 4 ,
                 3 ,4 ,8 ,5 ,6 ,1 ,9 ,7 ,2,
                 2 ,6 ,1 ,7 ,9, 4, 5, 8, 3
-                 */
-
+                */
 
                 /*
                 1, 2, 0, 4, 5, 6, 0, 8, 0,
@@ -363,8 +363,7 @@ public class Main {
                 3, 1, 0, 6, 9, 4, 8, 7, 0,
                 6, 4, 5, 8, 1, 0, 9, 3, 2,
                 0, 7, 8, 2, 3, 5, 0, 6, 1
-
-                 */
+                */
 
                 /*
                 5, 3, 0, 0, 7, 0, 0, 0, 0,
@@ -376,8 +375,7 @@ public class Main {
                 0, 6, 0, 0, 0, 0, 2, 8, 0,
                 0, 0, 0, 4, 1, 9, 0, 0, 5,
                 0, 0, 0, 0, 8, 0, 0, 7, 9
-
-                 */
+                */
         };
         // Werte in das Sudoku-Array übertragen
         for (int i = 0; i < 9; i++) {
