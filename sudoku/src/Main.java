@@ -1,6 +1,6 @@
 //import java.util;
 import java.util.Scanner;
-import helpers.java;
+
 
 
 /*
@@ -15,115 +15,122 @@ import helpers.java;
 
 
 public class Main {
-    // globale Variablen
+    /*
+     *   GLOBAL VARIABLES
+     */
     static boolean solved = false;
     static int[][] sudoku = new int[9][9];
-    static boolean solvable = true;
-    static int[][][] smallNumbers = new int[9][9][10];
+    //static boolean solvable = true;
+    static int[][][] kleineZahlen = new int[9][9][10];
 
 
-    // methoden
-    public static int welcheZahlFehltReihe(int zeile, int reihe) {
-        int fehlendeZahl = 0;
+    /*
+     *   -------
+     *   METHODS
+     *   -------
+     */
 
-        // reihe:
-        for (int temp = 0; temp < 9; temp++) {
-            if (sudoku[temp][reihe] != 0) {
-                fehlendeZahl = fehlendeZahl + sudoku[temp][reihe];
-                if (temp == 8) {
-                    return 45 - fehlendeZahl;
-                }
-            } else {
-                if (temp == zeile) {
+    /*
+     * we go through each row and check whether a single last number is missing
+     */
+    public static boolean lastNumberRow() {
+        int missingNumber = 45;
+        int numNonZeros = 0;
+        int x = 0;
+        int y = 0;
+        boolean changed = false;
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (sudoku[i][j] != 0) {
+                    numNonZeros++;
+                    missingNumber -= sudoku[i][j];
                 } else {
-                    break;
+                    x = i;
+                    y = j;
                 }
             }
+            if (numNonZeros == 8) {
+                sudoku[x][y] = missingNumber;
+                changed = true;
+            }
+            missingNumber = 45;
+            numNonZeros = 0;
         }
-        fehlendeZahl = 0;
+        return changed;
     }
 
-        public static int welcheZahlFehlt(int zeile, int reihe) {
-            int fehlendeZahl = 0;
+    /*
+     * we go through each column and check whether a single last number is missing
+     */
+    public static boolean lastNumberColumn() {
+        int missingNumber = 45;
+        int numNonZeros = 0;
+        int x = 0;
+        int y = 0;
+        boolean changed = false;
 
-            // reihe:
-            for (int temp = 0; temp < 9; temp++) {
-                if (sudoku[temp][reihe] != 0) {
-                    fehlendeZahl = fehlendeZahl + sudoku[temp][reihe];
-                    if (temp == 8) {
-                        return 45-fehlendeZahl;
-                    }
+        for (int j = 0; j < 9; j++) {
+            for (int i = 0; i < 9; i++) {
+                if (sudoku[i][j] != 0) {
+                    numNonZeros++;
+                    missingNumber -= sudoku[i][j];
                 } else {
-                    if (temp == zeile) {
-                    } else {
-                        break;
-                    }
+                    x = i;
+                    y = j;
                 }
             }
-            fehlendeZahl = 0;
-
-    public static int welcheZahlFehlt(int zeile, int reihe) {
-        int fehlendeZahl = 0;
-
-        // reihe: 
-        for (int temp = 0; temp < 9; temp++) {
-            if (sudoku[temp][reihe] != 0) {
-                fehlendeZahl = fehlendeZahl + sudoku[temp][reihe];
-                if (temp == 8) {
-                    return 45-fehlendeZahl;
-                }
-            } else {
-                if (temp == zeile) {
-                } else {
-                    break;
-                }
+            if (numNonZeros == 8) {
+                sudoku[x][y] = missingNumber;
+                changed = true;
             }
+            missingNumber = 45;
+            numNonZeros = 0;
         }
-        fehlendeZahl = 0;
-
-        // zeile:
-        for (int temp = 0; temp < 9; temp++) {
-            if (sudoku[zeile][temp] != 0) {
-                fehlendeZahl = fehlendeZahl + sudoku[zeile][temp];
-                if (temp == 8) {
-                    return 45-fehlendeZahl;
-                }
-            } else {
-                if (temp == reihe) {
-                } else {
-                    break;
-                }
-            }
-        }
-        fehlendeZahl = 0;
-
-        // block:
-        int tempReihe = reihe - (reihe % 3);
-        int tempZeile = zeile - (zeile % 3);
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (sudoku[tempZeile+i][tempReihe+j] != 0) {
-                    fehlendeZahl = fehlendeZahl + sudoku[tempZeile+i][tempReihe+j];
-                    if ((i == 2) && (j == 2)) {
-                        return 45-fehlendeZahl;
-                    }
-                } else {
-                    if ((tempZeile+i == zeile) && (tempReihe+j == reihe)) {
-                    } else {
-                        return 0;
-                        // wollte hier eigentlich break benutzen aber das ging nicht??
-                    }
-                }
-            }
-        }
-        return 0;
+        return changed;
     }
 
+    public static boolean lastNumberBlock() {
+        int missingNumber = 45;
+        int numNonZeros = 0;
+        int x = 0;
+        int y = 0;
+        boolean changed = false;
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (sudoku[i/3][j/3] != 0) {
+                    numNonZeros++;
+                    missingNumber -= sudoku[i/3][j/3];
+                } else {
+                    x = i;
+                    y = j;
+                }
+            }
+            if (numNonZeros == 8) {
+                sudoku[x][y] = missingNumber;
+                changed = true;
+            }
+            missingNumber = 45;
+            numNonZeros = 0;
+        }
+        return changed;
+    }
+
+    public static boolean welcheZahlFehlt() {
+        boolean changes = lastNumberRow();
+        //changes = changes || lastNumberColumn();
+        //changes = changes || lastNumberBlock();
+        return changes;
+    }
+
+    /*
+     *  for each empty space in the whole sudoku, delete small numbers if possible (same number in row/column/block)
+     */
     public static void kleineZahlenStreichen() {
         for (int zeile = 0; zeile < 9; zeile++) {
             for (int reihe = 0; reihe < 9; reihe++) {
                 if (sudoku[zeile][reihe] == 0) {
-
                     // reihe:
                     for (int temp = 0; temp < 9; temp++) {
                         switch (sudoku[temp][reihe]) {
@@ -232,75 +239,41 @@ public class Main {
                             }
                         }
                     }
-
                 }
             }
         }
     }
 
-    public static int letzteKleineZahl (int zeile, int reihe) {
+    public static void lastSmallNumberGlobal () {
         int anzNullen = 0;
         int einzutragendeZahl = 0;
+        int x = 0;
+        int y = 0;
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-
-                for (int k = 0; k < 10; k++) {
-                    if (kleineZahlen[i][j][k] == 0) {
-                        anzNullen++;
-                    } else {
-                        einzutragendeZahl = kleineZahlen[i][j][k];
-                    }
-                }
-
-                if (anzNullen == 9) {
-                    return einzutragendeZahl;
-                }
-            }
-        }
-        return 0;
-    }
-
-    public static void printSudoku() {
-        // ehrlich gesagt keine ahnung wieso ich manchmal +1 und manchmal nicht brauche vor mod, aber es klappt HAHAAHA
-        System.out.println(" ------------------------------------- ");
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                if (((j) % 3) == 0) {
-                    System.out.print(" | ");
-                }
-                System.out.print(" " + sudoku[i][j] + " ");
-                if (((j+1) % 9) == 0) {
-                    System.out.print(" | ");
-                    System.out.println();
-                }
-            }
-            if (((i+1) % 3) == 0) {
-                System.out.println(" ------------------------------------- ");
-            }
-        }
-    }
-
-    public static void zahlenEintragen() {
-        Scanner input = new Scanner(System.in);
-
-        System.out.println("\nJetzt bitte die Einträge des zu lösenden Sudokus eingeben. Leere Einträge = 0");
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                sudoku[i][j] = input.nextInt();
-            }
-        }
-    }
-
-    public static void checkGeloest() {
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
+                // for each cell, if empty:
                 if (sudoku[i][j] == 0) {
-                    return;
+                    // check if only one last small number remains
+                    for (int k = 1; k < 10; k++) {
+                        if (kleineZahlen[i][j][k] == 0) {
+                            anzNullen++;
+                        } else {
+                            einzutragendeZahl = kleineZahlen[i][j][k];
+                            x = i;
+                            y = j;
+                        }
+                    }
+
+                    if (anzNullen == 8) {
+                        sudoku[x][y] = einzutragendeZahl;
+                    }
+                    anzNullen = 0;
                 }
             }
         }
-         geloest = true;
     }
+
+
 
     public static int zeilenKleineZahlenPruefen(int zeile, int reihe) {
         for (int i = 1; i < 10; i++) {                          //für jede kleine zahl die bei [zeile][reihe] eingetragen ist
@@ -321,16 +294,13 @@ public class Main {
 
 
     public static void main(String[] args) {
-
         //zahlenEintragen();
-
-
         //sudoku = [[7,0,5,9,3,1,4,6,2],[2,4,3,8,0,6,9,7,0],[6,9,1,7,2,0,0,0,3],[4,0,0,6,1,0,3,0,8],[0,6,8,5,7,3,2,1,0],[1,0,2,0,9,8,0,0,7],[3,0,0,0,8,5,1,4,6,],[0,2,4,1,0,7,8,3,9],[8,1,0,3,0,9,7,0,5]];
 
         // das ist von chatgpt
         // Array in einer Zeile füllen
         int[] werte = {
-
+                /*
                 7 ,0 ,9 ,6 ,0 ,3 ,8 ,4 ,5,
                 4 ,1 ,3 ,0 ,5 ,7 ,6 ,2 ,9,
                 8 ,5 ,0 ,4 ,0 ,9 ,0 ,1 ,7,
@@ -353,7 +323,7 @@ public class Main {
                 2 ,6 ,1 ,7 ,9, 4, 5, 8, 3
                 */
 
-                /*
+/*
                 1, 2, 0, 4, 5, 6, 0, 8, 0,
                 4, 5, 6, 7, 8, 9, 1, 2, 3,
                 7, 8, 9, 1, 2, 3, 4, 5, 0,
@@ -363,9 +333,9 @@ public class Main {
                 3, 1, 0, 6, 9, 4, 8, 7, 0,
                 6, 4, 5, 8, 1, 0, 9, 3, 2,
                 0, 7, 8, 2, 3, 5, 0, 6, 1
-                */
+*/
 
-                /*
+
                 5, 3, 0, 0, 7, 0, 0, 0, 0,
                 6, 0, 0, 1, 9, 5, 0, 0, 0,
                 0, 9, 8, 0, 0, 0, 0, 6, 0,
@@ -375,14 +345,19 @@ public class Main {
                 0, 6, 0, 0, 0, 0, 2, 8, 0,
                 0, 0, 0, 4, 1, 9, 0, 0, 5,
                 0, 0, 0, 0, 8, 0, 0, 7, 9
-                */
+
         };
+
+        long startTime = System.nanoTime();
+
         // Werte in das Sudoku-Array übertragen
         for (int i = 0; i < 9; i++) {
             System.arraycopy(werte, i * 9, sudoku[i], 0, 9);
         }
 
-        // kleine Zahlen füllen
+        /*
+         *  filling the small numbers array
+         */
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 for (int k = 0; k < 10; k++) {
@@ -391,32 +366,16 @@ public class Main {
             }
         }
 
-        System.out.println(kleineZahlen[1][1][9]);
-
-
-
         System.out.println("Eingegebenes Sudoku:");
-        printSudoku();
+        Helpers.printSudoku(sudoku);
 
-        geloest = false;
-        while (!geloest) {
+        int iterationsCounter = 0;
+        while (!Helpers.checkSolved(sudoku)) {
             kleineZahlenStreichen();
             // checke reihen/zeilen/blöcke fast voll?
-            for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 9; j++) {
-                    if (sudoku[i][j] == 0) {
-                        sudoku[i][j] = welcheZahlFehlt(i, j);
-                    }
-                }
-            }
+            welcheZahlFehlt();
 
-            for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 9; j++) {
-                    if (sudoku[i][j] == 0) {
-                        sudoku[i][j] = letzteKleineZahl(i, j);
-                    }
-                }
-            }
+            lastSmallNumberGlobal();
 
             for (int i = 0; i < 9; i++) {
                 for (int j = 0; j < 9; j++) {
@@ -425,17 +384,16 @@ public class Main {
                     }
                 }
             }
-            
 
-
-            // checke kleine Zahlen nur noch eine übrig?
-
-            printSudoku();
-            checkGeloest();
+            System.out.println("The sodoku after " + iterationsCounter + "th iteration");
+            Helpers.printSudoku(sudoku);
+            iterationsCounter++;
         }
+        long finishTime = System.nanoTime();
 
         System.out.println("Gelöstes Sudoku:");
-        printSudoku();
+        Helpers.printSudoku(sudoku);
+        Helpers.printStats(startTime, finishTime, iterationsCounter);
     }
 }
 
