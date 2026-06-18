@@ -244,6 +244,9 @@ public class Main {
         }
     }
 
+    /*
+     *  we check whether in any field only one small number is left
+     */
     public static void lastSmallNumberGlobal () {
         int anzNullen = 0;
         int einzutragendeZahl = 0;
@@ -274,7 +277,7 @@ public class Main {
     }
 
 
-
+/*
     public static int zeilenKleineZahlenPruefen(int zeile, int reihe) {
         for (int i = 1; i < 10; i++) {                          //für jede kleine zahl die bei [zeile][reihe] eingetragen ist
             if (kleineZahlen[zeile][reihe][i] == i) {           //und nicht 0 eingetragen ist
@@ -290,6 +293,65 @@ public class Main {
             }
         }
         return 0;
+    }
+*/
+
+
+    /*
+     *  we try to find a small number, which is the last spot for that number in row/column/block
+     */
+    public static void lastSmallNumberEntry() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (sudoku[i][j] == 0) {
+                    for (int k = 1; k < 10; k++) {
+                        if (kleineZahlen[i][j][k] != 0) {
+                            // check row
+                            for (int r = 0; r < 9; r++) {
+                                if ((kleineZahlen[r][j][k] != 0) && (r != i)) {
+                                    break;
+                                }
+                                if (r == 8) {
+                                    sudoku[i][j] = k;
+                                    System.out.println(i + j + k +"last small number entry gefunden!");
+                                    return;
+                                }
+                            }
+
+                            // check column
+                            for (int c = 0; c < 9; c++) {
+                                if ((kleineZahlen[i][c][k] != 0) && (c != j)) {
+                                    break;
+                                }
+                                if (c == 8) {
+                                    sudoku[i][j] = k;
+                                    System.out.println(i + j + k +"last small number entry gefunden!");
+                                    return;
+                                }
+                            }
+
+                            // check block
+                            int startRow = i/3 * 3;
+                            int startCol = j/3 * 3;
+                            for (int b_r = startRow; b_r < startRow+3; b_r++) {
+                                for (int b_c = startCol; b_c < startCol+3; b_c++) {
+                                    if ((kleineZahlen[b_r][b_c][k] != 0) && (b_c != j) && (b_r != i)) {
+                                        break;
+                                    }
+                                    if (b_c == 2) {
+                                        if (b_r == 2) {
+                                            sudoku[i][j] = k;
+                                            System.out.println(i + j + k +"last small number entry gefunden!");
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 
@@ -310,7 +372,7 @@ public class Main {
                 0 ,9 ,7 ,2 ,3 ,8 ,1 ,6, 0 ,
                 3 ,4 ,8 ,5 ,0 ,1 ,0 ,7 ,2,
                 0 ,6 ,1 ,0 ,9, 0, 5, 0, 3
-
+                */
                 /*
                 7 ,2 ,9 ,6 ,1 ,3 ,8 ,4 ,5,
                 4 ,1 ,3 ,8 ,5 ,7 ,6 ,2 ,9,
@@ -322,8 +384,7 @@ public class Main {
                 3 ,4 ,8 ,5 ,6 ,1 ,9 ,7 ,2,
                 2 ,6 ,1 ,7 ,9, 4, 5, 8, 3
                 */
-
-/*
+                /*
                 1, 2, 0, 4, 5, 6, 0, 8, 0,
                 4, 5, 6, 7, 8, 9, 1, 2, 3,
                 7, 8, 9, 1, 2, 3, 4, 5, 0,
@@ -333,8 +394,7 @@ public class Main {
                 3, 1, 0, 6, 9, 4, 8, 7, 0,
                 6, 4, 5, 8, 1, 0, 9, 3, 2,
                 0, 7, 8, 2, 3, 5, 0, 6, 1
-*/
-
+                */
 
                 5, 3, 0, 0, 7, 0, 0, 0, 0,
                 6, 0, 0, 1, 9, 5, 0, 0, 0,
@@ -376,18 +436,12 @@ public class Main {
             welcheZahlFehlt();
 
             lastSmallNumberGlobal();
+            lastSmallNumberEntry();
 
-            for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 9; j++) {
-                    if (sudoku[i][j] == 0) {
-                        sudoku[i][j] = zeilenKleineZahlenPruefen(i, j);
-                    }
-                }
-            }
-
+            iterationsCounter++;
             System.out.println("The sodoku after " + iterationsCounter + "th iteration");
             Helpers.printSudoku(sudoku);
-            iterationsCounter++;
+
         }
         long finishTime = System.nanoTime();
 

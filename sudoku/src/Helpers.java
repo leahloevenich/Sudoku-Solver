@@ -53,13 +53,13 @@ public class Helpers {
 
     public static void printStats(long startTime, long finishTime, int numIterations) {
         long elapsedTime = finishTime - startTime;
-        elapsedTime /= 1_000_000;
+        elapsedTime /= 1000;
 
         /*
          *  printing the stats
          */
         System.out.println(" ─────────────── ⋆⋅☆⋅⋆ ────────────────");
-        System.out.println("Time elapsed: " + elapsedTime + " ms");
+        System.out.println("Time elapsed: " + elapsedTime + " μs");
         System.out.println("#Algorithm iterations: " + numIterations);
     }
 }
